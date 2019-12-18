@@ -222,7 +222,7 @@ input,select{
 }
 
 .msg_error{
-	color: #65656;
+	color: #FF5733;
 }
 .msg_save{
 	color: #126e00;
@@ -290,7 +290,7 @@ table td{
 }
 .btn_cancel,.btn_ok{
 	width: 124px;
-	background: #478ba2
+	/*background: #42b343*/
 	color:#FFF;
 	display: inline-block;
 	padding: 5px;
@@ -341,7 +341,7 @@ table td{
 	border: 1px solid #ddd;
 	padding: 5px;
 	display: inline-block;
-	font-size: center;
+	/*font-size: center;*/
 	text-align: center;
 	width: 35px;
 }
@@ -470,7 +470,7 @@ table td{
 	margin-top: 15px;
 }
 
-}
+
 .modal h2{
 	color: #0E725D;
 	text-transform: uppercase;

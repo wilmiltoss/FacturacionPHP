@@ -8,22 +8,23 @@ if(!empty($_SESSION['active']))
 }else {
 
 if(!empty($_POST))
-{
+{	//lo que recibe del formulario
 	if(empty($_POST['usuario']) || empty($_POST['clave']))
 	{
 		$alert = 'Ingrese su usuario y su clave';
 	}else{
 		require_once "conexion.php";
-
+		
+		//mysqli_real_escape_string = Escapa los caracteres especiales de una cadena 
 		$user = mysqli_real_escape_string($conection,$_POST['usuario']);
 		$pas  = md5(mysqli_real_escape_string($conection,$_POST['clave']));
 
 		//$user = $_POST['usuario'];
 		//$pas  = $_POST['clave'];
-
-
+		
+		//CONSULTA
 		$query = mysqli_query($conection, "SELECT * FROM usuario WHERE usuario = '$user' AND clave = '$pas'");
-		mysqli_close($conection);//cierre de la conexion
+		mysqli_close($conection);//cierre de la conexion.
 
 		$result = mysqli_num_rows($query);
 
@@ -38,7 +39,7 @@ if(!empty($_POST))
 			$_SESSION['email']  = $data['correo'];
 			$_SESSION['user']   = $data['usuario'];
 			$_SESSION['rol']    = $data['rol'];
-
+			//SI ES CORRECTO PASA A LA SGTE VENTANA
 			header('location: sistema/');
 
 		}else{
@@ -48,7 +49,6 @@ if(!empty($_POST))
 		}
 	}	
 }
-
  ?>
 
 <!DOCTYPE html>
