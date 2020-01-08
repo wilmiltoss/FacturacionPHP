@@ -1,0 +1,84 @@
+/*CARGAR LA TABLA FACTURA*/
+DELIMITER $$
+	/*enviamos cod_usuario y cod_cliente en la tabla factura*/
+	CREATE PROCEDURE procesar_venta(cod_usuario int, cod_cliente int, token varchar(50))
+    	BEGIN
+        	/*Variables*/
+        	DECLARE factura INT;
+            DECLARE registros INT;
+            DECLARE total DECIMAL(10,2);
+            
+            DECLARE nueva_existencia int;
+            DECLARE existencia_actual int;
+            
+            DECLARE tmp_cod_producto int;
+            DECLARE tmp_cant_producto int;
+            DECLARE a INT;
+            SET a = 1;/*esta variable va iniciar con valor 1*/
+            
+            /*Creamos una tabla temporal tbl_tmp_tokenuser*/
+        	CREATE TEMPORARY TABLE tbl_tmp_tokenuser(
+                id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                cod_prod BIGINT,/*almacenamos el codigo del producto temporalmente*/
+                cant_prod int);/*almacenamos la cantidad del producto temporalmente*/
+                
+            /*De la tabla detalle_temp transladamos a la tabla factura*/
+            /*Seteamos el valor, la cantidad de registros de detalle_temp donde el token_user sea igual al token q enviamos como parametro en el procedimiento*/
+            /*extrae el registro de un solo token*/
+            SET registros = (SELECT COUNT(*) FROM detalle_temp WHERE token_user = token);/*A1*/
+            /*validamos si existe registros en la variable*/
+            IF registros > 0 THEN
+            /*trasladamos las columnas del detalle_temp(cod_prod, cant_prod) en la tabla tbl_tmp_tokenuser*/
+            	INSERT INTO tbl_tmp_tokenuser(cod_prod, cant_prod) SELECT codproducto FROM detalle_temp 
+                WHERE token_user = token;
+                /*CREAMOS LA FACTURA = insertamos en la columna usuario,codcliente de la tabla factura los valores del parametro*/
+                /*no se necesita insertar los demas parametros*/
+                /*1-INSERTAMOS usuario, codcliente a la tabla factura*/
+                INSERT INTO factura(usuario,codcliente) VALUES(cod_usuario,cod_cliente);
+                /*seteamos el ultimo registro creado en la tabla con la funcion LAST_INSERT_ID*/
+                SET factura = LAST_INSERT_ID();/*ref B1*/
+                /*2-Luego insertamos todos los productos en detalle_factura*/
+                INSERT INTO detallefactura(nofactura,codproducto,cantidad,precio_venta)
+                		SELECT (factura) as nofactura,codproducto,cantidad,precio_venta FROM detalle_temp
+                        WHERE token_user = token;
+                        /*CICLO DE PROCESO mientras a sea menor o igual a registros*/
+                        WHILE a <= registros DO/*A1*/
+                        	/*asignamos valores a la variable tmp_cod_producto y tmp_cant_producto que salen de la tabla tbl_tmp_tokenuser */
+                            /*cod_prod viene de los datos de la tabla detalle_temp*/
+                        	SELECT cod_prod,cant_prod INTO tmp_cod_producto,tmp_cant_producto FROM tbl_tmp_tokenuser
+                            WHERE id = a;
+                            /*extraemos la existencia de cada uno de los producto que estamos vendiendo*/
+                            SELECT existencia INTO existencia_actual FROM producto WHERE codproducto = tmp_cod_producto;
+                            /*asignamos a la variable nueva_existencia restando tmp_cant_producto*/
+                            SET nueva_existencia = existencia_actual - tmp_cant_producto;/*RESTAMOS EL INVENTARIO*/
+                            /*actualizamos la nueva existencia de la tabla producto*/
+                            
+                            /*NUEVA EXISTENCIA DEL PRODUCTO VENDIDO*/
+                             /*seteamos la nueva_existencia donde codproducto es igual a la variable que viene de la tabla tbl_tmp_tokenuser */
+                            UPDATE producto SET existencia = nueva_existencia WHERE codproducto = tmp_cod_producto;
+                            
+                            /*cuando llegue a este ciclo va incrementar la variable a*/
+                            SET a=a+1;/*A1*/
+                        
+                        END WHILE;
+                        
+                        /* Luego del fin del ciclo Seteamos a la variable total que declaramos arriba*/
+                        /*dendro del select hacemos una operacions segun el token para obtener el total*/
+                        SET total = (SELECT SUM(cantidad * precio_venta) FROM detalle_temp WHERE token_user = token);
+                        /*actualizamos el total de la factura donde la variable factura sea igual a ref B1*/
+                        UPDATE factura SET totalfactura = total WHERE nofactura = factura;
+                        
+                        /*eliminamos todos los registros de la tabla detalle_tmp para limpiar*/
+                        DELETE FROM detalle_temp WHERE token_user = token;
+                        /**limpiamos todos los registros de la tabal temporal tbl_tmp_tokenuser creado mas arriba */
+                        TRUNCATE TABLE tbl_tmp_tokenuser;
+                        /*mostramos la tabla factura*/
+                        SELECT * FROM factura WHERE nofactura = factura;
+                
+            ELSE
+            /*si no encuentra registro*/
+            SELECT 0;/*devuelve 0*/
+            
+            END IF;
+        END;$$
+DELIMITER ;

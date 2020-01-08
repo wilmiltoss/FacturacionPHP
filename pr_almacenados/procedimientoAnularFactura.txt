@@ -1,0 +1,64 @@
+ DELIMITER $$
+CREATE PROCEDURE anular_factura(no_factura int)/*parametro que recible es el nro de factura*/
+	BEGIN
+    	DECLARE existe_factura int;
+        DECLARE registros int;
+        DECLARE a int;
+        
+        /*atributos temporales*/
+        DECLARE cod_producto int;
+        DECLARE cant_producto int;
+        DECLARE existencia_actual int;
+        DECLARE nueva_existencia int;
+        
+        /*Consultamos si la factura existe en la bd, contando*/
+        SET existe_factura = (SELECT COUNT(*) FROM factura WHERE nofactura = no_factura and estatus = 1);
+        
+    	/*Validamos la variable*/
+        IF existe_factura > 0 THEN
+        	CREATE TEMPORARY TABLE tbl_tmp(/*Creamos una tabla temporal*/
+                id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                cod_prod BIGINT,
+                cant_prod int);
+         		
+                /*Luego seteamo la variable a*/
+                SET a = 1;
+                /*Contamos todos los registros que tenemos en la tabla detalle_factura*/
+                SET registros = (SELECT COUNT(*) FROM detallefactura WHERE nofactura = no_factura);
+                /*Validamos cuantos registros existen en la variable registros*/
+                IF registros > 0 THEN
+                	/*extraemos los dos campo(codigo del producto y cantidad) de la tabla detalle_factura*/
+                    /*para ingresarlos en la tabal temporal creada, todos los registros q encuentra*/
+                    INSERT INTO tbl_tmp(cod_prod,cant_prod) SELECT codproducto,cantidad FROM detallefactura WHERE
+                    nofactura = no_factura;/*donde el nro de factura de la tabla detalle = nro fact de la tbl temporal*/
+                    /*Recorremos todos los registros hallados en la tabla temporal*/
+                    WHILE a <= registros DO/*mientras que registros sea mayor igual a 1 osea si encuentra registros*/
+                    /*asignamos los dos valores a la tabla tbl_tmp de las variables temporales*/
+                    	SELECT cod_prod,cant_prod INTO cod_producto,cant_producto FROM tbl_tmp WHERE id = 0;
+                        /*Extraemos la existencia actual de c/ producto en particular*/
+                        /*Asignamos lo que tiene existencia de la tabla producto a la variable tmporal existencia_actual */
+                        SELECT existencia INTO existencia_actual FROM producto WHERE codproducto = cod_producto;
+                        /*Sumamos la existencia actual con la cantidad de producto que hemos vendido*/
+                        SET nueva_existencia = existencia_actual = cant_producto;
+                        /*Actualizamos la existencia de cada producto*/
+                        UPDATE producto SET existencia = nueva_existencia WHERE codproducto + cod_producto;
+                        /*Incrementamos la variable*/
+                        SET a=a+1;/*seteamos la variable hasta que se cumpla la validacion de registros while arriba*/
+                        
+                    END WHILE;
+                    /*ACTUALIZAMOS LA FACTURA Y LE SETEAMOS EN EL ESTATUS EL VALOR 2*/
+                    UPDATE factura SET estatus = 2 WHERE nofactura = no_factura;
+                    /*Limpiamos la tabla temporal*/
+                    DROP TABLE tbl_tmp; 
+                    /*Mostramos los datos de la factura*/
+                    SELECT * FROM factura WHERE nofactura = no_factura;
+                    
+                END IF;
+                	
+        ELSE/*sino muestra 0*/
+        	SELECT 0 factura;
+        END IF;
+    
+    
+    END; $$
+DELIMITER ;    
