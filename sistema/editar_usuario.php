@@ -29,7 +29,7 @@
 													  	 OR (correo = '$email' AND idusuario != $idUsuario) ");
 
 			$result= mysqli_fetch_array($query);
-			$result = count($result);//cuentan la cantidad de registros
+			//$result = count($result);//cuentan la cantidad de registros
 
 			if($result > 0){
 				$alert = '<p class="msg_error">El correo o el usuario ya existe.</p>';

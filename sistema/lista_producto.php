@@ -9,7 +9,7 @@
 <head>
 	<meta charset="UTF-8">
 	<?php include "includes/scripts.php";?>
-	<title>Lista de Cliente</title>
+	<title>Lista de Productos</title>
 </head>
 <body>
 	<?php include "includes/header.php"; ?>
@@ -28,7 +28,29 @@
 				<th>Descripción</th>
 				<th>Precio</th>
 				<th>Existencia</th>
-				<th>Proveedor</th>
+				<th>
+				<?php 
+ 					$query_proveedor = mysqli_query($conection, "SELECT codproveedor, proveedor FROM proveedor WHERE estatus = 1 ORDER BY proveedor ASC");
+ 					$result_proveedor = mysqli_num_rows($query_proveedor);
+ 				 ?>
+ 				 <!-- LISTA DESPLEGABLE DEL PROVEEDOR DE LA CABECERA-->
+ 				<select name="proveedor" id="search_proveedor"><!--LL.1-->
+ 					<option value="" selected>PROVEEDOR</option><!--O .1-->
+ 					<?php 
+ 						if ($result_proveedor > 0) {
+
+ 							while ($proveedor = mysqli_fetch_array($query_proveedor)) { 								
+ 						?>
+ 							<option value="<?php echo $proveedor['codproveedor']; ?>"><?php echo $proveedor['proveedor']; ?></option>
+ 						<?php 
+
+ 							}
+ 						}
+ 					?>	
+ 				</select>
+
+
+				</th>
 				<th>Foto</th>
 				<th>Acciones</th>
 			</tr>
@@ -91,8 +113,8 @@
 							|
 							<!--capturamos la url por el idcliente -->
 							<a class="link_edit" href="editar_producto.php?id=<?php echo $data["codproducto"]; ?>"><i class="fas fa-edit"></i> Editar</a>
-							|
-							<a class="link_delete" href="eliminar_confirmar_producto.php?id=<?php echo $data["codproducto"]; ?>"><i class="fas fa-trash-alt"></i> Eliminar</a>
+							|	<!--utilizamos la ventana de ajax para el boton eliminar J.1 -->
+							<a class="link_delete del_product" href="#" product = "<?php echo $data["codproducto"]; ?>"><i class="fas fa-trash-alt"></i> Eliminar</a>
 						</td>
 						<?php } ?>
 					</tr>

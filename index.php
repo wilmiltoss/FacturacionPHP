@@ -10,7 +10,7 @@ if(!empty($_SESSION['active']))
 if(!empty($_POST))
 {	//lo que recibe del formulario
 	if(empty($_POST['usuario']) || empty($_POST['clave']))
-	{
+	{  
 		$alert = 'Ingrese su usuario y su clave';
 	}else{
 		require_once "conexion.php";
@@ -23,7 +23,10 @@ if(!empty($_POST))
 		//$pas  = $_POST['clave'];
 		
 		//CONSULTA
-		$query = mysqli_query($conection, "SELECT * FROM usuario WHERE usuario = '$user' AND clave = '$pas'");
+		$query = mysqli_query($conection, "SELECT u.idusuario,u.nombre,u.correo,u.usuario,r.idrol,r.rol 
+			FROM usuario u 
+			INNER JOIN rol r ON u.rol = r.idrol  
+			WHERE u.usuario = '$user' AND u.clave = '$pas'");
 		mysqli_close($conection);//cierre de la conexion.
 
 		$result = mysqli_num_rows($query);
@@ -38,7 +41,8 @@ if(!empty($_POST))
 			$_SESSION['nombre'] = $data['nombre'];
 			$_SESSION['email']  = $data['correo'];
 			$_SESSION['user']   = $data['usuario'];
-			$_SESSION['rol']    = $data['rol'];
+			$_SESSION['rol']    = $data['idrol'];
+			$_SESSION['rol_name']    = $data['rol'];//variable de session para mostrar en el index datos usuario
 			//SI ES CORRECTO PASA A LA SGTE VENTANA
 			header('location: sistema/');
 

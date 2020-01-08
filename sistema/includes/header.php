@@ -6,8 +6,7 @@
 	}
 ?>
 	<header>
-		<div class="header">
-			
+		<div class="header">			
 			<h1>Sistema Facturación</h1>
 			<div class="optionsBar">
 				<p>Asuncion, <?php echo fechaC(); ?></p>
@@ -19,11 +18,9 @@
 		</div>
 <?php include "nav.php"; ?>
 </header>
-
  <!-- Clase modal generico para la ventanita de alerta--> 
  <!-- event.preventDefault() evita q se recargue el formulario --> 
 <div class="modal">
 	<div class="bodyModal">
-
 	</div>
 </div>

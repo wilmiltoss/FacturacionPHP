@@ -24,6 +24,7 @@
 					if ($_SESSION['rol'] == 1 || $_SESSION['rol'] == 2) {
 				 ?>
 				</li>
+				
 				<li class="principal">
 					<a href="#"><i class="fas fa-truck"></i> Proveedores</a>
 					<ul>
@@ -41,10 +42,10 @@
 				</li>
 			<?php } ?>
 				<li class="principal">
-					<a href="#"><i class="far fa-file-alt"></i> Facturas</a>
+					<a href="#"><i class="far fa-file-alt"></i> Ventas</a>
 					<ul>
-						<li><a href="#"><i class="fas fa-plus"></i> Nueva Factura</a></li>
-						<li><a href="#"><i class="far fa-file-alt"></i> Facturas</a></li>
+						<li><a href="nueva_venta.php"><i class="fas fa-plus"></i> Nueva Venta</a></li>
+						<li><a href="ventas.php"><i class="far fa-file-alt"></i> Ventas</a></li>
 					</ul>
 				</li>
 			</ul>

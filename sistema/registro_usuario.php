@@ -23,7 +23,7 @@
 			$rol	= $_POST['rol'];
 
 			$query = mysqli_query($conection,"SELECT * FROM usuario WHERE usuario = '$user' OR correo = '$email' ");
-			mysql_close($conection);//cierre de conexion
+			//mysqli_close($conection);//cierre de conexion
 
 			$result= mysqli_fetch_array($query);
 
@@ -31,7 +31,7 @@
 				$alert = '<p class="msg_error">El correo o el usuario ya existe.</p>';
 			}else{
 
-				$query_insert = mysqli_query($conection,"INSERT INTO usuario(nombre,correo,usuario,clave,rol)
+				$query_insert = mysqli_query($conection,"INSERT INTO usuario (nombre,correo,usuario,clave,rol)
 																	VALUES ('$nombre','$email','$user','$clave','$rol')");
 				if($query_insert){
 					$alert='<p class="msg_save">Usuario creado correctamente.</p>.';

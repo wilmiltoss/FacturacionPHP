@@ -96,9 +96,7 @@
 
  							}
  						}
- 					 ?>
- 				
-
+ 					?>	
  				</select>
 
  				<label for="producto">Producto</label>
