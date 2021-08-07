@@ -29,9 +29,9 @@ DELIMITER $$
             /*validamos si existe registros en la variable*/
             IF registros > 0 THEN
             /*trasladamos las columnas del detalle_temp(cod_prod, cant_prod) en la tabla tbl_tmp_tokenuser*/
-            	INSERT INTO tbl_tmp_tokenuser(cod_prod, cant_prod) SELECT codproducto FROM detalle_temp 
+            	INSERT INTO tbl_tmp_tokenuser(cod_prod, cant_prod) SELECT codproducto,cantidad FROM detalle_temp 
                 WHERE token_user = token;
-                /*CREAMOS LA FACTURA = insertamos en la columna usuario,codcliente de la tabla factura los valores del parametro*/
+                /*CREAMOS LA FACTURA = insertamos en la columna usuario,codcliente de la tabla factura los valores del parametro*/  
                 /*no se necesita insertar los demas parametros*/
                 /*1-INSERTAMOS usuario, codcliente a la tabla factura*/
                 INSERT INTO factura(usuario,codcliente) VALUES(cod_usuario,cod_cliente);
