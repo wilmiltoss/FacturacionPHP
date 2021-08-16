@@ -1,4 +1,4 @@
-<?php //AE.1
+<?php
 	$subtotal 	= 0;
 	$iva 	 	= 0;
 	$impuesto 	= 0;
@@ -19,7 +19,7 @@
 		<tr>
 			<td class="logo_factura">
 				<div>
-					<img src="img/logo.png" width="200" height="100">
+					<img src="">
 				</div>
 			</td>
 			<td class="info_empresa">
@@ -27,25 +27,24 @@
 					if($result_config > 0){
 						$iva = $configuracion['iva'];
 				 ?>
-				<div><!--mostramos los datos de la variable $configuracion accedemos a los valores de su tabla AE.1-->
+				<div>
 					<span class="h2"><?php echo strtoupper($configuracion['nombre']); ?></span>
 					<p><?php echo $configuracion['razon_social']; ?></p>
-					<p><?php echo $configuracion['direccion']; ?></p>
-					<p>C.I.: <?php echo $configuracion['ci']; ?></p>
-					<p>Teléfono: <?php echo $configuracion['telefono']; ?></p>
+					<p><?php echo $configuracion['direccion']; ?></p><br>
+					<p>CI: <?php echo $configuracion['ci']; ?></p><br>
+					<p>Teléfono: <?php echo $configuracion['telefono']; ?></p><br>
 					<p>Email: <?php echo $configuracion['email']; ?></p>
 				</div>
 				<?php
 					}
 				 ?>
 			</td>
-			<!--mostramos los datos de la variable $factura accedemos a los valores de su tabla AF.1-->
 			<td class="info_factura">
 				<div class="round">
-					<span class="h3">Factura</span>
-					<p>No. Factura: <strong><?php echo $factura['nofactura']; ?></strong></p>
-					<p>Fecha: <?php echo $factura['fecha']; ?></p>
-					<p>Hora: <?php echo $factura['hora']; ?></p>
+					<span class="h3">Factura</span><br>
+					<p>No. Factura: <strong><?php echo $factura['nofactura']; ?></strong></p><br>
+					<p>Fecha: <?php echo $factura['fecha']; ?></p><br>
+					<p>Hora: <?php echo $factura['hora']; ?></p><br>
 					<p>Vendedor: <?php echo $factura['vendedor']; ?></p>
 				</div>
 			</td>
@@ -58,7 +57,7 @@
 					<span class="h3">Cliente</span>
 					<table class="datos_cliente">
 						<tr>
-							<td><label>C.I.:</label><p><?php echo $factura['nit']; ?></p></td>
+							<td><label>Nit:</label><p><?php echo $factura['nit']; ?></p></td>
 							<td><label>Teléfono:</label> <p><?php echo $factura['telefono']; ?></p></td>
 						</tr>
 						<tr>
@@ -75,14 +74,12 @@
 	<table id="factura_detalle">
 			<thead>
 				<tr>
-					<th width="50px">Codigo.</th>
-					<th class="textleft">Descripción</th>
 					<th width="50px">Cant.</th>
+					<th class="textleft">Descripción</th>
 					<th class="textright" width="150px">Precio Unitario.</th>
 					<th class="textright" width="150px"> Precio Total</th>
 				</tr>
 			</thead>
-			<!--mostramos los datos de la variable $result_detalle accedemos a los valores de su tabla AG.1-->
 			<tbody id="detalle_productos">
 
 			<?php
@@ -92,13 +89,12 @@
 					while ($row = mysqli_fetch_assoc($query_productos)){
 			 ?>
 				<tr>
-					<td><?php echo $row['codproducto']; ?></td>
-					<td><?php echo $row['descripcion']; ?></td>
 					<td class="textcenter"><?php echo $row['cantidad']; ?></td>
+					<td><?php echo $row['descripcion']; ?></td>
 					<td class="textright"><?php echo $row['precio_venta']; ?></td>
 					<td class="textright"><?php echo $row['precio_total']; ?></td>
 				</tr>
-			<?php  //calculamos los totales
+			<?php
 						$precio_total = $row['precio_total'];
 						$subtotal = round($subtotal + $precio_total, 2);
 					}
